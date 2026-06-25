@@ -5,11 +5,84 @@
 -->
 <html>
 	<head>
-		<title>GeoIncite LLC</title>
+		<title>GeoIncite LLC | Advanced Geospatial Intelligence</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			/* CRITICAL SCROLL FIXES */
+			html, body {
+				overflow-y: auto !important; /* Forces vertical scrolling capability */
+				height: auto !important;
+			}
+			#wrapper {
+				overflow-y: visible !important;
+				height: auto !important;
+				min-height: 100vh;
+				padding: 4em 2em; /* Gives the page room to breath at top and bottom */
+			}
+			#bg {
+				position: fixed !important; /* Keeps the background locked solid while content scrolls */
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			/* CONTENT ADJUSTMENTS */
+			#header p.description {
+				font-size: 0.9em;
+				line-height: 1.6;
+				max-width: 600px;
+				margin: 1.5em auto;
+				opacity: 0.85;
+			}
+			.contact-container {
+				max-width: 600px;
+				margin: 3em auto 0 auto;
+				padding-top: 3em;
+				border-top: 1px solid rgba(255, 255, 255, 0.15);
+			}
+			.contact-details {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				list-style: none;
+				padding: 0;
+				margin: 2em 0 1em 0;
+				font-size: 0.85em;
+				text-align: left;
+			}
+			.contact-details li {
+				flex: 1 1 45%;
+				margin-bottom: 1.5em;
+				padding: 0 1em;
+			}
+			.contact-details h3 {
+				font-size: 0.9em;
+				margin-bottom: 0.3em;
+				letter-spacing: 0.05em;
+				text-transform: uppercase;
+				opacity: 0.7;
+			}
+			.contact-details a, .contact-details span {
+				color: #fff;
+				text-decoration: none;
+				border-bottom: none;
+			}
+			iframe {
+				border-radius: 4px;
+				background: transparent;
+				margin-top: 1em;
+			}
+			#footer {
+				position: relative !important; /* Moves the footer below the form instead of fixing it to screen bottom */
+				margin-top: 4em;
+				bottom: auto !important;
+				left: auto !important;
+			}
+		</style>
 	</head>
 	<body class="is-preload">
 		<div id="wrapper">
@@ -21,27 +94,70 @@
 					<header id="header">
 						<h1>GeoIncite LLC</h1>
 						<p>Advanced Geospatial &nbsp;&bull;&nbsp; Technology &nbsp;&bull;&nbsp; Intelligence</p>
+						
+						<!-- Company Profile Copy -->
+						<p class="description">
+							We specialize in the automated fusion, extraction, and distillation of massive remote sensing datasets—including UAS LiDAR, mobile LiDAR, SLAM scanning, photogrammetry, and terrestrial 3D reality capture—into lightweight, design-ready CAD and GIS assets. Delivering high-precision geomatics engineering support and custom software solutions tailored for infrastructure, renewable energy, and the AEC marketplace.
+						</p>
+
+						<!-- Geospatial Icon Navigation -->
 						<nav>
 							<ul>
-								<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-								<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-								<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
-								<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								<li><a href="#" class="icon solid fa-globe-americas"><span class="label">Geospatial Intelligence</span></a></li>
+								<li><a href="#" class="icon solid fa-map-marked-alt"><span class="label">CAD & GIS Assets</span></a></li>
+								<li><a href="#" class="icon solid fa-satellite"><span class="label">Remote Sensing & LiDAR</span></a></li>
 							</ul>
 						</nav>
+
+						<!-- Contact Form & Company Details Integration Zone -->
+						<div class="contact-container" id="contact">
+							<h2>Get in Touch</h2>
+							
+							<iframe data-tally-src="https://tally.so/r/nPQxzx" loading="lazy"
+								width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0"
+								title="Contact Form"></iframe>
+
+							<ul class="contact-details">
+								<li>
+									<h3>Email</h3>
+									<a href="mailto:info@geoincite.com">info@geoincite.com</a>
+								</li>
+								<li>
+									<h3>Phone</h3>
+									<a href="tel:+15055004242">(505) 500-4242</a>
+								</li>
+								<li>
+									<h3>Address</h3>
+									<span>1209 Mountain Road Pl NE, STE R<br>Albuquerque, NM 87110</span>
+								</li>
+							</ul>
+						</div>
+
 					</header>
 
 				<!-- Footer -->
 					<footer id="footer">
-						<span class="copyright">&copy; 2026 GeoIncite LLC. All Rights Reserved.</span>
+						<span class="copyright">&copy; 2026 GeoIncite LLC. All Rights Reserved.<br>Professional Land Surveying services conducted in compliance with NMSA 1978.</span>
 					</footer>
 
 			</div>
 		</div>
 		<script>
-			window.onload = function() { document.body.classList.remove('is-preload'); }
-			window.ontouchmove = function() { return false; }
+			window.onload = function() { 
+				document.body.classList.remove('is-preload'); 
+				// Tally script injector
+				if (typeof Tally !== 'undefined') {
+					Tally.loadEmbeds();
+				} else {
+					const d = document, s = d.getElementsByTagName("script")[0];
+					const src = "https://tally.so/widgets/embed.js";
+					if (!d.querySelector(`script[src="${src}"]`)) {
+						const j = d.createElement("script"); j.src = src; d.body.appendChild(j);
+					}
+				}
+			}
+			// REMOVED THE INTERFERENCE SCRIPT: 
+			// window.ontouchmove = function() { return false; } <-- Deleted this line to fix mobile swipe tracking!
 			window.onorientationchange = function() { document.body.scrollTop = 0; }
 		</script>
 	</body>
