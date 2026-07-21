@@ -11,24 +11,19 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; }
     .card { background: white; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); padding: 32px; max-width: 380px; width: 100%; text-align: center; border: 1px solid #e2e8f0; }
     
-    /* Logo Avatar Container */
-    .avatar { 
-      width: 80px; 
-      height: 80px; 
-      background: #f1f5f9; 
-      border-radius: 50%; 
-      margin: 0 auto 16px; 
+    /* Clean Logo Container Header */
+    .logo-container { 
+      margin: 0 auto 20px; 
       display: flex; 
       align-items: center; 
-      justify-content: center; 
-      overflow: hidden; 
-      border: 2px solid #e2e8f0;
+      justify-content: center;
     }
-    .avatar img { 
-      width: 100%; 
-      height: 100%; 
+    .logo-container img { 
+      max-width: 140px; 
+      max-height: 80px; 
+      width: auto;
+      height: auto;
       object-fit: contain; 
-      padding: 12px;
     }
 
     h1 { font-size: 22px; color: var(--primary); margin: 0 0 4px; }
@@ -46,8 +41,8 @@
   <div id="loading" class="status">Decrypting contact details...</div>
 
   <div id="content" style="display: none;">
-    <!-- Logo Image Avatar -->
-    <div class="avatar">
+    <!-- Clean Logo Header -->
+    <div class="logo-container">
       <img src="/cards/images/logo.png" alt="GeoIncite Logo" onerror="this.style.display='none';">
     </div>
 
