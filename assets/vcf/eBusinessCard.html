@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Contact Card | GeoIncite</title>
-  <!-- Load Web Crypto API / CryptoJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <!-- Self-hosted CryptoJS (no third-party CDN dependency) -->
+  <script src="/assets/vcf/crypto-js.min.js"></script>
   <style>
     :root { --primary: #0f172a; --accent: #2563eb; --bg: #f8fafc; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; }
@@ -17,19 +17,19 @@
     button { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
     button:hover { background: #1d4ed8; }
     .status { font-size: 14px; color: #64748b; }
-    .error { color: #dc2626; }
+    .error { color: #dc2626; text-align: left; white-space: pre-wrap; word-break: break-word; }
   </style>
 </head>
 <body>
 
 <div class="card">
   <div id="loading" class="status">Decrypting contact details...</div>
-  
+
   <div id="content" style="display: none;">
     <div class="avatar" id="avatar-initials">--</div>
     <h1 id="disp-name">Loading...</h1>
     <p class="title" id="disp-title">Title</p>
-    
+
     <div class="detail"><strong>🏢 Company:</strong> GeoIncite</div>
     <div class="detail" id="disp-email"><strong>✉️ Email:</strong> -</div>
     <div class="detail" id="disp-phone"><strong>📱 Phone:</strong> -</div>
@@ -41,32 +41,41 @@
 <script>
   let rawVCard = "";
 
+  function showError(msg) {
+    const loadingEl = document.getElementById('loading');
+    loadingEl.className = "status error";
+    loadingEl.innerText = msg;
+  }
+
   async function init() {
+    const loadingEl = document.getElementById('loading');
+
+    // 0. Confirm CryptoJS actually loaded (most common silent-failure point)
+    if (typeof CryptoJS === "undefined") {
+      showError("Access Denied: Failed to load decryption library (CryptoJS). Check /assets/vcf/crypto-js.min.js is reachable, or an extension/network policy is blocking it.");
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const empId = params.get('id'); // e.g., emp1
     const secretKey = decodeURIComponent(window.location.hash.substring(1)); // Read passphrase from #hash
 
-    const loadingEl = document.getElementById('loading');
-
     if (!empId || !secretKey) {
-      loadingEl.className = "status error";
-      loadingEl.innerText = "Access Error: Missing ID or decryption key in URL.";
+      showError("Access Error: Missing ID or decryption key in URL.");
       console.error("Missing parameters:", { empId, secretKeyPresent: !!secretKey });
       return;
     }
 
     try {
-      // Use absolute path /assets/vcf/ to resolve correctly on custom domain
       const targetUrl = `/assets/vcf/${empId}.vcf.enc`;
       console.log(`Fetching encrypted file from: ${targetUrl}`);
 
       const response = await fetch(targetUrl);
       if (!response.ok) throw new Error(`HTTP ${response.status}: File not found at ${targetUrl}`);
-      
-      const rawText = await response.text();
-      const encryptedText = rawText.trim(); // Remove trailing spaces/newlines
 
-      // Decrypt using AES
+      const rawText = await response.text();
+      const encryptedText = rawText.trim();
+
       const decryptedBytes = CryptoJS.AES.decrypt(encryptedText, secretKey);
       rawVCard = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
@@ -74,7 +83,6 @@
         throw new Error("Decryption output failed vCard format check. (Invalid Key or Payload)");
       }
 
-      // Parse fields to build display
       const name = (rawVCard.match(/FN:(.*)/) || [])[1] || "Employee";
       const title = (rawVCard.match(/TITLE:(.*)/) || [])[1] || "Staff";
       const email = (rawVCard.match(/EMAIL:(.*)/) || [])[1] || "";
@@ -91,8 +99,7 @@
 
     } catch (err) {
       console.error("Decryption Error:", err);
-      loadingEl.className = "status error";
-      loadingEl.innerText = "Access Denied: Invalid key or file missing.";
+      showError("Access Denied: " + err.message);
     }
   }
 
