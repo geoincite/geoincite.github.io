@@ -1,4 +1,4 @@
-emp_id,first_name,last_name,title,email,phone,prefix,credentials,street,city,state,zip_code,country,passphrase
-emp_01,Marcus,Reid,Principal LiDAR Scientist,marcus.reid@geoincite.com,720-555-192,Dr.,"PE, PhD",1200 Survey Way,Denver,CO,80202,USA,
-emp_02,Priya,Nair,Field Survey Lead,priya.nair@geoincite.com,720-555-177,,,,,,,,
-emp_03,Sam,Chen,GIS Analyst,sam.chen@geoincite.com,720-555-163,,GISP,,,,,,
+emp_id,first_name,last_name,title,email,phone,prefix,credentials,street,city,state,zip_code,country,url,linkedin,passphrase
+emp_01,Marcus,Reid,Principal LiDAR Scientist,marcus.reid@geoincite.com,+1-720-555-192,Dr.,"PE, PhD",1200 Survey Way,Denver,CO,80202,USA,https://geoincite.com,https://www.linkedin.com/in/marcusreid,
+emp_02,Priya,Nair,Field Survey Lead,priya.nair@geoincite.com,1-720-555-177,,,,,,,,https://geoincite.com,https://www.linkedin.com/in/priyanair,
+emp_03,,,,,,,,,,,,,,,
