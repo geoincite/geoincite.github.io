@@ -58,7 +58,12 @@
 
     const params = new URLSearchParams(window.location.search);
     const empId = params.get('id'); // e.g., emp1
-    const secretKey = decodeURIComponent(window.location.hash.substring(1)); // Read passphrase from #hash
+
+    // Defensive parsing: strip any stray leading '#' (double-hash) and trim
+    // hidden whitespace that can sneak in via copy/paste or link rewriting.
+    let rawHash = window.location.hash.substring(1);
+    while (rawHash.startsWith('#')) rawHash = rawHash.substring(1);
+    const secretKey = decodeURIComponent(rawHash).trim();
 
     if (!empId || !secretKey) {
       showError("Access Error: Missing ID or decryption key in URL.");
@@ -69,6 +74,7 @@
     try {
       const targetUrl = `/assets/vcf/${empId}.vcf.enc`;
       console.log(`Fetching encrypted file from: ${targetUrl}`);
+      console.log(`Using empId: ${JSON.stringify(empId)}, key: ${JSON.stringify(secretKey)} (${secretKey.length} chars)`);
 
       const response = await fetch(targetUrl);
       if (!response.ok) throw new Error(`HTTP ${response.status}: File not found at ${targetUrl}`);
@@ -80,7 +86,17 @@
       rawVCard = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
       if (!rawVCard || !rawVCard.includes("BEGIN:VCARD")) {
-        throw new Error("Decryption output failed vCard format check. (Invalid Key or Payload)");
+        // Show the exact runtime values on-screen (not just console) so this
+        // is diagnosable without opening DevTools. The key is already
+        // visible in the address bar, so surfacing it here adds no new risk.
+        throw new Error(
+          "Decryption output failed vCard format check. (Invalid Key or Payload)\n\n" +
+          `Debug info:\n` +
+          `  id param: ${JSON.stringify(empId)}\n` +
+          `  key used: ${JSON.stringify(secretKey)} (${secretKey.length} chars)\n` +
+          `  file fetched: ${targetUrl} (${encryptedText.length} chars)\n` +
+          `  file starts with: ${JSON.stringify(encryptedText.slice(0, 20))}`
+        );
       }
 
       const name = (rawVCard.match(/FN:(.*)/) || [])[1] || "Employee";
