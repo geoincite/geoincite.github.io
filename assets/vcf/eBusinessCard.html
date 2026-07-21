@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Contact Card | GeoIncite</title>
+  <!-- Load Web Crypto API / CryptoJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <style>
+    :root { --primary: #0f172a; --accent: #2563eb; --bg: #f8fafc; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); padding: 32px; max-width: 380px; width: 100%; text-align: center; border: 1px solid #e2e8f0; }
+    .avatar { width: 80px; height: 80px; background: #e2e8f0; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: var(--primary); }
+    h1 { font-size: 22px; color: var(--primary); margin: 0 0 4px; }
+    p.title { font-size: 14px; color: #64748b; margin: 0 0 16px; font-weight: 500; }
+    .detail { font-size: 14px; color: #334155; margin: 8px 0; text-align: left; background: #f1f5f9; padding: 10px 14px; border-radius: 8px; word-break: break-all; }
+    button { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+    button:hover { background: #1d4ed8; }
+    .status { font-size: 14px; color: #64748b; }
+    .error { color: #dc2626; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div id="loading" class="status">Decrypting contact details...</div>
+  
+  <div id="content" style="display: none;">
+    <div class="avatar" id="avatar-initials">--</div>
+    <h1 id="disp-name">Loading...</h1>
+    <p class="title" id="disp-title">Title</p>
+    
+    <div class="detail"><strong>🏢 Company:</strong> GeoIncite</div>
+    <div class="detail" id="disp-email"><strong>✉️ Email:</strong> -</div>
+    <div class="detail" id="disp-phone"><strong>📱 Phone:</strong> -</div>
+
+    <button onclick="saveContact()">Save to Contacts (.vcf)</button>
+  </div>
+</div>
+
+<script>
+  let rawVCard = "";
+
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const empId = params.get('id'); // e.g., emp1
+    const secretKey = window.location.hash.substring(1); // Read passphrase from #hash
+
+    const loadingEl = document.getElementById('loading');
+
+    if (!empId || !secretKey) {
+      loadingEl.className = "status error";
+      loadingEl.innerText = "Access Error: Missing ID or decryption key.";
+      return;
+    }
+
+    try {
+      // Fetch encrypted file located in the same /vcf/ folder
+      const response = await fetch(`./${empId}.vcf.enc`);
+      if (!response.ok) throw new Error("File not found");
+      
+      const encryptedText = await response.text();
+
+      // Decrypt using AES
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedText, secretKey);
+      rawVCard = decryptedBytes.toString(CryptoJS.enc.Utf8);
+
+      if (!rawVCard || !rawVCard.includes("BEGIN:VCARD")) {
+        throw new Error("Invalid Key");
+      }
+
+      // Parse fields to build display
+      const name = (rawVCard.match(/FN:(.*)/) || [])[1] || "Employee";
+      const title = (rawVCard.match(/TITLE:(.*)/) || [])[1] || "Staff";
+      const email = (rawVCard.match(/EMAIL:(.*)/) || [])[1] || "";
+      const phone = (rawVCard.match(/TEL;TYPE=CELL:(.*)/) || [])[1] || "";
+
+      document.getElementById('disp-name').innerText = name;
+      document.getElementById('disp-title').innerText = title;
+      document.getElementById('disp-email').innerHTML = `<strong>✉️ Email:</strong> ${email}`;
+      document.getElementById('disp-phone').innerHTML = `<strong>📱 Phone:</strong> ${phone}`;
+      document.getElementById('avatar-initials').innerText = name.split(' ').map(n=>n[0]).join('');
+
+      loadingEl.style.display = "none";
+      document.getElementById('content').style.display = "block";
+
+    } catch (err) {
+      loadingEl.className = "status error";
+      loadingEl.innerText = "Access Denied: Invalid key or file missing.";
+    }
+  }
+
+  function saveContact() {
+    const blob = new Blob([rawVCard], { type: 'text/vcard;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', 'contact.vcf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
