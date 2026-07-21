@@ -44,29 +44,34 @@
   async function init() {
     const params = new URLSearchParams(window.location.search);
     const empId = params.get('id'); // e.g., emp1
-    const secretKey = window.location.hash.substring(1); // Read passphrase from #hash
+    const secretKey = decodeURIComponent(window.location.hash.substring(1)); // Read passphrase from #hash
 
     const loadingEl = document.getElementById('loading');
 
     if (!empId || !secretKey) {
       loadingEl.className = "status error";
-      loadingEl.innerText = "Access Error: Missing ID or decryption key.";
+      loadingEl.innerText = "Access Error: Missing ID or decryption key in URL.";
+      console.error("Missing parameters:", { empId, secretKeyPresent: !!secretKey });
       return;
     }
 
     try {
-      // Fetch encrypted file located in the same /vcf/ folder
-      const response = await fetch(`./${empId}.vcf.enc`);
-      if (!response.ok) throw new Error("File not found");
+      // Use absolute path /assets/vcf/ to resolve correctly on custom domain
+      const targetUrl = `/assets/vcf/${empId}.vcf.enc`;
+      console.log(`Fetching encrypted file from: ${targetUrl}`);
+
+      const response = await fetch(targetUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}: File not found at ${targetUrl}`);
       
-      const encryptedText = await response.text();
+      const rawText = await response.text();
+      const encryptedText = rawText.trim(); // Remove trailing spaces/newlines
 
       // Decrypt using AES
       const decryptedBytes = CryptoJS.AES.decrypt(encryptedText, secretKey);
       rawVCard = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
       if (!rawVCard || !rawVCard.includes("BEGIN:VCARD")) {
-        throw new Error("Invalid Key");
+        throw new Error("Decryption output failed vCard format check. (Invalid Key or Payload)");
       }
 
       // Parse fields to build display
@@ -75,16 +80,17 @@
       const email = (rawVCard.match(/EMAIL:(.*)/) || [])[1] || "";
       const phone = (rawVCard.match(/TEL;TYPE=CELL:(.*)/) || [])[1] || "";
 
-      document.getElementById('disp-name').innerText = name;
-      document.getElementById('disp-title').innerText = title;
-      document.getElementById('disp-email').innerHTML = `<strong>✉️ Email:</strong> ${email}`;
-      document.getElementById('disp-phone').innerHTML = `<strong>📱 Phone:</strong> ${phone}`;
-      document.getElementById('avatar-initials').innerText = name.split(' ').map(n=>n[0]).join('');
+      document.getElementById('disp-name').innerText = name.trim();
+      document.getElementById('disp-title').innerText = title.trim();
+      document.getElementById('disp-email').innerHTML = `<strong>✉️ Email:</strong> ${email.trim()}`;
+      document.getElementById('disp-phone').innerHTML = `<strong>📱 Phone:</strong> ${phone.trim()}`;
+      document.getElementById('avatar-initials').innerText = name.trim().split(' ').map(n=>n[0]).join('');
 
       loadingEl.style.display = "none";
       document.getElementById('content').style.display = "block";
 
     } catch (err) {
+      console.error("Decryption Error:", err);
       loadingEl.className = "status error";
       loadingEl.innerText = "Access Denied: Invalid key or file missing.";
     }
