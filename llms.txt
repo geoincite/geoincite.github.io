@@ -1,0 +1,50 @@
+# GeoIncite LLC
+
+> GeoIncite LLC is a professional land surveying and construction staking firm in Albuquerque, New Mexico, specializing in surveying, geomatics, and geospatial intelligence. It provides boundary, topographic, ALTA/NSPS, and construction staking surveys, along with advanced mapping and existing conditions modeling, for infrastructure, renewable energy, public agency, and tribal clients throughout New Mexico and the Southwest.
+
+## About
+
+GeoIncite LLC is a specialized surveying, geomatics, and geospatial intelligence firm providing high-precision professional surveying services, advanced mapping, and existing conditions modeling for infrastructure, renewable energy, public agency, and tribal clients. Established in 2026 and headquartered in Albuquerque, New Mexico, GeoIncite provides responsive, locally managed geomatics services to public and private sector clients throughout New Mexico and across the Southwest.
+
+The team combines surveying, mapping, and geospatial engineering expertise with modern data processing workflows to deliver accurate, reliable, and cost-effective results that reduce project risk, accelerate delivery schedules, and support informed decisions throughout the project lifecycle.
+
+## Company facts
+
+- Legal name: GeoIncite LLC
+- Founded: 2026
+- Headquarters: 901 Lamberton Pl NE, Ste W, Albuquerque, NM 87107, USA
+- Phone: (505) 600-2347
+- Email: contact@geoincite.com
+- Website: https://geoincite.com
+- Licensing: Surveying work is overseen by licensed Professional Surveyors in New Mexico and Arizona
+- Drone operations: FAA Part 107 certified remote pilots
+- Service area: Albuquerque, all of New Mexico, and the Southwest
+- Clients: infrastructure, renewable energy, public agencies, tribal governments, and private-sector developers, engineers, and contractors
+
+## Core services: professional land surveying
+
+- Boundary surveys
+- Topographic surveys
+- ALTA/NSPS land title surveys
+- Construction staking and construction layout
+- Subdivision platting
+- Public Land Survey System (PLSS) work and section corner recovery
+- Survey control networks for infrastructure projects
+- Existing conditions surveys and modeling
+- Civil engineering survey support
+
+## Advanced mapping and reality capture
+
+- UAS (drone) LiDAR (ULS) and aerial photogrammetry, tied to surveyed ground control
+- Mobile laser scanning (MLS) for corridor mapping
+- Terrestrial laser scanning (TLS) and SLAM scanning
+- 3D reality capture and digital twins
+- Remote sensing and GIS mapping
+
+## Data processing and software
+
+GeoIncite uses automated data fusion, feature extraction, and intelligent processing and drafting workflows to turn complex remote sensing datasets into lightweight, design-ready CAD and GIS deliverables. The firm also builds and licenses custom geospatial software and processing pipelines for the geomatics and AEC industries.
+
+## Contact
+
+To request a survey or consultation, email contact@geoincite.com or call (505) 600-2347.
